@@ -1,51 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tip Calculator App</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tip Calculator App</title>
-</head>
-
-<body>
-  <main class="min-h-screen flex flex-col items-center justify-center" id="app">
-    <div class="grid grid-cols-2 max-w-2xl w-full border-2 p-3 rounded-md">
-      <span class="space-y-4 border-r-2 py-3 pr-5 border-gray-200">
-        <div class="space-y-1 flex flex-col">
-          <label for="bill" class="text-xl text-gray-500">Bill</label>
-          <input min="0" class="text-center border-2 text-lg p-1" type="number" id="bill" />
-        </div>
-        <div class="space-y-1 flex flex-col">
-          <label for="tip" class="text-xl text-gray-500">Tip %</label>
-          <input min="0" class="text-center border-2 text-lg p-1" type="number" id="tip" />
-        </div>
-        <div class="space-y-1 flex flex-col">
-          <label for="count" class="text-xl text-gray-500">Number of people</label>
-          <input min="1" class="text-center border-2 text-lg p-1" type="number" id="count" />
-        </div>
-      </span>
-      <span class="flex flex-col justify-center align-center p-5 space-y-10">
-        <div class="flex justify-between items-center">
-          <div class="text-xl text-gray-800">Tip
-            <div class="text-sm text-gray-400">per person</div>
+  <body>
+    <main
+      class="min-h-screen flex flex-col items-center justify-center"
+      id="app"
+    >
+      <div class="grid grid-cols-2 max-w-2xl w-full border-2 p-3 rounded-md">
+        <span class="space-y-4 border-r-2 py-3 pr-5 border-gray-200">
+          <div class="space-y-1 flex flex-col">
+            <label for="bill" class="text-xl text-gray-500">Bill</label>
+            <input
+              min="0"
+              max="99999"
+              class="text-center border-2 text-lg p-1"
+              type="number"
+              id="bill"
+            />
           </div>
-          <div class="text-4xl font-semibold">
-            <span>$</span><span id="perPersonTip">0.00</span>
+          <div class="space-y-1 flex flex-col">
+            <label for="tip" class="text-xl text-gray-500">Tip %</label>
+            <input
+              min="0"
+              max="99999"
+              class="text-center border-2 text-lg p-1"
+              type="number"
+              id="tip"
+            />
           </div>
-        </div>
-        <div class="flex justify-between items-center">
-          <div class="text-xl text-gray-800">Total
-            <div class="text-sm text-gray-400">per person</div>
+          <div class="space-y-1 flex flex-col">
+            <label for="count" class="text-xl text-gray-500"
+              >Number of people</label
+            >
+            <input
+              min="1"
+              max="99999"
+              class="text-center border-2 text-lg p-1"
+              type="number"
+              id="count"
+            />
           </div>
-          <div class="text-4xl font-semibold">
-            <span>$</span><span id="totalPerPerson">0.00</span>
+        </span>
+        <span class="flex flex-col justify-center align-center p-5 space-y-10">
+          <div class="flex justify-between items-center">
+            <div class="text-xl text-gray-800">
+              Tip
+              <div class="text-sm text-gray-400">per person</div>
+            </div>
+            <div class="text-4xl font-semibold">
+              <span>$</span><span id="perPersonTip">0.00</span>
+            </div>
           </div>
-        </div>
-      </span>
-    </div>
-  </main>
-  <script type="module" src="/main.js"></script>
-</body>
-
+          <div class="flex justify-between items-center">
+            <div class="text-xl text-gray-800">
+              Total
+              <div class="text-sm text-gray-400">per person</div>
+            </div>
+            <div class="text-4xl font-semibold">
+              <span>$</span><span id="totalPerPerson">0.00</span>
+            </div>
+          </div>
+        </span>
+      </div>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
 </html>
