@@ -21,20 +21,34 @@ class NumberInput {
     this.node.value = Number(newValue);
   };
 
+  increment = () => {
+    this.node.value =
+      this.node.value != "" ? Number(this.node.value) + 1 : this.node.min;
+    this.subscriptions.forEach(([_listeners, callback]) => callback());
+  };
+
+  decrement = () => {
+    if (this.node.value != "" && this.node.value != this.node.min) {
+      this.node.value = Number(this.node.value) - 1;
+    }
+    this.subscriptions.forEach(([_listeners, callback]) => callback());
+  };
+
   subscribeToUpdates = (callback) => {
     this.subscriptions.push([
-      this.node.addEventListener("keyup", callback),
-      callback,
-    ]);
-    this.subscriptions.push([
-      this.node.addEventListener("change", callback),
+      [
+        this.node.addEventListener("keyup", callback),
+        this.node.addEventListener("change", callback),
+      ],
       callback,
     ]);
   };
 
   unsubscribeAllUpdates = () => {
-    this.subscriptions.map(([subscription, callback]) =>
-      this.node.removeEventListener(subscriptiolon, callback)
+    this.subscriptions.forEach(([listeners, callback]) =>
+      listeners.forEach((subscription) =>
+        this.node.removeEventListener(subscription, callback)
+      )
     );
   };
 
@@ -71,6 +85,10 @@ window.onload = () => {
 
   const perPersonTipNode = document.getElementById("perPersonTip");
   const totalPerPersonNode = document.getElementById("totalPerPerson");
+  const decrementTipBtn = document.getElementById("decrementTip");
+  const incrementTipBtn = document.getElementById("incrementTip");
+  const incrementPersonCountBtn = document.getElementById("incrementCount");
+  const decrementPersonCountBtn = document.getElementById("decrementCount");
 
   function updateData() {
     const bill = billInput.getValue();
@@ -94,6 +112,12 @@ window.onload = () => {
   billInput.subscribeToUpdates(updateData);
   tipInput.subscribeToUpdates(updateData);
   personCountInput.subscribeToUpdates(updateData);
+
+  decrementPersonCountBtn.onclick = personCountInput.decrement;
+  incrementPersonCountBtn.onclick = personCountInput.increment;
+
+  decrementTipBtn.onclick = tipInput.decrement;
+  incrementTipBtn.onclick = tipInput.increment;
 
   updateData();
 };
