@@ -90,6 +90,9 @@ window.onload = () => {
   const incrementPersonCountBtn = document.getElementById("incrementCount");
   const decrementPersonCountBtn = document.getElementById("decrementCount");
 
+  // Updates the text of tips per person and total bill per person with new
+  // value obtained from calculateTip function and if any of the field is not
+  // valid value we show 0 in both tips per person and total bill by default
   function updateData() {
     const bill = billInput.getValue();
     const tip = tipInput.getValue();
@@ -109,6 +112,8 @@ window.onload = () => {
     }
   }
 
+  // Subscribe to any changes made in any of the input so that new total bill
+  // and tips per person can be calculated
   billInput.subscribeToUpdates(updateData);
   tipInput.subscribeToUpdates(updateData);
   personCountInput.subscribeToUpdates(updateData);
@@ -119,5 +124,6 @@ window.onload = () => {
   decrementTipBtn.onclick = tipInput.decrement;
   incrementTipBtn.onclick = tipInput.increment;
 
+  // Initial call to handle case where the inputs are remembered on reload
   updateData();
 };
