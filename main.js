@@ -1,4 +1,5 @@
 import "./style.css";
+
 class NumberInput {
   node;
   subscriptions = [];
@@ -44,14 +45,6 @@ class NumberInput {
     ]);
   };
 
-  unsubscribeAllUpdates = () => {
-    this.subscriptions.forEach(([listeners, callback]) =>
-      listeners.forEach((subscription) =>
-        this.node.removeEventListener(subscription, callback)
-      )
-    );
-  };
-
   restrictToNumberInput = () => {
     this.node.onkeydown = (e) => {
       const asciiVal = e.key.charCodeAt(0);
@@ -63,8 +56,11 @@ class NumberInput {
         e.key === "ArrowRight";
       const isNumber = asciiVal >= 48 && asciiVal <= 58;
       const isDecimal = asciiVal == 46 && this.node.value.length > 0;
+      const doesExceedMax = Number(this.node.value + e.key) > this.node.max;
 
       if (!isNumber && !isDecimal && !isSpecialKeyPressed) {
+        e.preventDefault();
+      } else if (doesExceedMax) {
         e.preventDefault();
       }
     };
