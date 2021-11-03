@@ -57,7 +57,9 @@ class NumberInput {
         e.key === "Backspace" ||
         e.key === "Tab" ||
         e.key === "ArrowLeft" ||
-        e.key === "ArrowRight";
+        e.key === "ArrowRight" ||
+        e.key === "Home" ||
+        e.key === "End";
       const isNumber = asciiVal >= 48 && asciiVal <= 58;
       const isDecimal = asciiVal == 46 && /^\d+$/.test(this.node.value);
       const doesExceedMax = Number(this.node.value + e.key) > this.node.max;
