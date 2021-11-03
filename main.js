@@ -23,9 +23,12 @@ class NumberInput {
   };
 
   increment = () => {
-    this.node.value =
+    const newVal =
       this.node.value != "" ? Number(this.node.value) + 1 : this.node.min;
-    this.subscriptions.forEach(([_listeners, callback]) => callback());
+    if (newVal <= this.node.max) {
+      this.node.value = newVal;
+      this.subscriptions.forEach(([_listeners, callback]) => callback());
+    }
   };
 
   decrement = () => {
@@ -47,6 +50,7 @@ class NumberInput {
 
   restrictToNumberInput = () => {
     this.node.onkeydown = (e) => {
+      e.target.setAttribute("type", "text");
       const asciiVal = e.key.charCodeAt(0);
       const isSpecialKeyPressed =
         e.ctrlKey ||
@@ -57,10 +61,11 @@ class NumberInput {
       const isNumber = asciiVal >= 48 && asciiVal <= 58;
       const isDecimal = asciiVal == 46 && this.node.value.length > 0;
       const doesExceedMax = Number(this.node.value + e.key) > this.node.max;
+      const isSelected = e.target.selectionEnd - e.target.selectionStart;
 
       if (!isNumber && !isDecimal && !isSpecialKeyPressed) {
         e.preventDefault();
-      } else if (doesExceedMax) {
+      } else if (doesExceedMax && !isSelected) {
         e.preventDefault();
       }
     };
