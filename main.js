@@ -4,11 +4,11 @@ class NumberInput {
   node;
   subscriptions = [];
 
-  constructor(id = "") {
+  constructor(id = "", onlyInteger = false) {
     this.node = document.getElementById(id);
 
     if (this.node != undefined) {
-      this.restrictToNumberInput();
+      this.restrictToNumberInput(onlyInteger);
     } else {
       throw new Error("Id must be valid");
     }
@@ -48,7 +48,7 @@ class NumberInput {
     ]);
   };
 
-  restrictToNumberInput = () => {
+  restrictToNumberInput = (onlyInteger) => {
     this.node.onkeydown = (e) => {
       e.target.setAttribute("type", "text");
       const asciiVal = e.key.charCodeAt(0);
@@ -63,7 +63,7 @@ class NumberInput {
       const doesExceedMax = Number(this.node.value + e.key) > this.node.max;
       const isSelected = e.target.selectionEnd - e.target.selectionStart;
 
-      if (!isNumber && !isDecimal && !isSpecialKeyPressed) {
+      if (!isNumber && (onlyInteger || !isDecimal) && !isSpecialKeyPressed) {
         e.preventDefault();
       } else if (doesExceedMax && !isSelected) {
         e.preventDefault();
@@ -82,7 +82,7 @@ const calculateTip = (bill, tip, peopleCount) => {
 window.onload = () => {
   const billInput = new NumberInput("bill");
   const tipInput = new NumberInput("tip");
-  const personCountInput = new NumberInput("count");
+  const personCountInput = new NumberInput("count", true);
 
   const perPersonTipNode = document.getElementById("perPersonTip");
   const totalPerPersonNode = document.getElementById("totalPerPerson");
