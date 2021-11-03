@@ -15,7 +15,7 @@ class NumberInput {
   }
 
   getValue = () => {
-    return this.node.value;
+    return Number(this.node.value);
   };
 
   setValue = (newValue) => {
