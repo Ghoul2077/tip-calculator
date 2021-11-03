@@ -32,7 +32,7 @@ class NumberInput {
   };
 
   decrement = () => {
-    if (this.node.value != "" && this.node.value != this.node.min) {
+    if (this.node.value != "" && this.node.value - 1 >= this.node.min) {
       this.node.value = Number(this.node.value) - 1;
     }
     this.subscriptions.forEach(([_listeners, callback]) => callback());
@@ -59,7 +59,7 @@ class NumberInput {
         e.key === "ArrowLeft" ||
         e.key === "ArrowRight";
       const isNumber = asciiVal >= 48 && asciiVal <= 58;
-      const isDecimal = asciiVal == 46 && this.node.value.length > 0;
+      const isDecimal = asciiVal == 46 && /^\d+$/.test(this.node.value);
       const doesExceedMax = Number(this.node.value + e.key) > this.node.max;
       const isSelected = e.target.selectionEnd - e.target.selectionStart;
 
