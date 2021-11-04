@@ -1,7 +1,10 @@
 import "./style.css";
 
+// Class for the number inputs bill, tip and person count
 class NumberInput {
+  // Ref to the node of the input
   node;
+  // Array container to keep track of all listeners on the node
   subscriptions = [];
 
   constructor(id = "", onlyInteger = false) {
@@ -14,14 +17,17 @@ class NumberInput {
     }
   }
 
+  // Getter function for the input
   getValue = () => {
     return Number(this.node.value);
   };
 
+  // Setter function for the input
   setValue = (newValue) => {
     this.node.value = Number(newValue);
   };
 
+  // Increments the value and extends its effect to all subscriptions
   increment = () => {
     const newVal =
       this.node.value != "" ? Number(this.node.value) + 1 : this.node.min;
@@ -31,6 +37,7 @@ class NumberInput {
     }
   };
 
+  // Decrements the value and extends its effect to all subscriptions
   decrement = () => {
     if (this.node.value != "" && this.node.value - 1 >= this.node.min) {
       this.node.value = Number(this.node.value) - 1;
@@ -38,6 +45,7 @@ class NumberInput {
     this.subscriptions.forEach(([_listeners, callback]) => callback());
   };
 
+  // Add callbacks to be called whenever the value of the input changes
   subscribeToUpdates = (callback) => {
     this.subscriptions.push([
       [
@@ -48,18 +56,23 @@ class NumberInput {
     ]);
   };
 
+  // Restricts the input value to numbers and special keys only and validates
+  // whether the input is within min and max ranges
   restrictToNumberInputAndValidate = (onlyInteger) => {
     this.node.onkeydown = (e) => {
-      e.target.setAttribute("type", "text");
       const asciiVal = e.key.charCodeAt(0);
       const isSpecialKeyPressed =
         e.ctrlKey ||
-        e.key === "Backspace" ||
-        e.key === "Tab" ||
-        e.key === "ArrowLeft" ||
-        e.key === "ArrowRight" ||
-        e.key === "Home" ||
-        e.key === "End";
+        [
+          "Backspace",
+          "Tab",
+          "ArrowLeft",
+          "ArrowRight",
+          "ArrowUp",
+          "ArrowDown",
+          "Home",
+          "End",
+        ].some((key) => key === e.key);
       const isNumber = asciiVal >= 48 && asciiVal <= 58;
       const isDecimal = asciiVal == 46 && /^\d+$/.test(this.node.value);
       const doesExceedMax = Number(this.node.value + e.key) > this.node.max;
@@ -74,6 +87,8 @@ class NumberInput {
   };
 }
 
+// Class for the tip calculator, contains NumberInput class objects as members
+// and methods to calculate new output and update it on the page
 class TipCalculator {
   perPersonTipNode;
   totalPerPersonNode;
@@ -99,6 +114,7 @@ class TipCalculator {
     this.totalPerPersonNode = document.getElementById(totalPerPersonId);
   }
 
+  // Calculate new tips and update it on the calculator output
   updateData = () => {
     const bill = this.billInput.getValue();
     const tip = this.tipInput.getValue();
@@ -143,6 +159,7 @@ window.onload = () => {
   const incrementPersonCountBtn = document.getElementById("incrementCount");
   const decrementPersonCountBtn = document.getElementById("decrementCount");
 
+  // Attach onclick functions to +, - buttons of tip and person count inputs
   decrementTipBtn.onclick = tipInput.decrement;
   incrementTipBtn.onclick = tipInput.increment;
   decrementPersonCountBtn.onclick = personCountInput.decrement;
