@@ -1,5 +1,7 @@
 # Tip Calculator App
 
+> Created By :- _Prakhar Singhal_
+
 ## Running Guide
 
 > Use npm run dev to start a development server at localhost:3000
@@ -24,3 +26,5 @@
 > - Testing if clicking on labels is focusing on correct input
 > - Test to check that there are no unecessary console logs or errors being generated
 > - Test to check if the app is working with decimal inputs
+> - Test to check if correct keyboards show on mobile devices corresponding to each input
+> - Verify the output is rounded to 2 decimal places
