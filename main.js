@@ -8,7 +8,7 @@ class NumberInput {
     this.node = document.getElementById(id);
 
     if (this.node != undefined) {
-      this.restrictToNumberInput(onlyInteger);
+      this.restrictToNumberInputAndValidate(onlyInteger);
     } else {
       throw new Error("Id must be valid");
     }
@@ -48,7 +48,7 @@ class NumberInput {
     ]);
   };
 
-  restrictToNumberInput = (onlyInteger) => {
+  restrictToNumberInputAndValidate = (onlyInteger) => {
     this.node.onkeydown = (e) => {
       e.target.setAttribute("type", "text");
       const asciiVal = e.key.charCodeAt(0);
@@ -74,59 +74,80 @@ class NumberInput {
   };
 }
 
-const calculateTip = (bill, tip, peopleCount) => {
-  const newTotalTip = (bill * tip) / 100;
-  const newTipPerPerson = newTotalTip / peopleCount;
-  const newTotalPerPerson = bill / peopleCount + newTipPerPerson;
-  return { tipPerPerson: newTipPerPerson, totalPerPerson: newTotalPerPerson };
-};
+class TipCalculator {
+  perPersonTipNode;
+  totalPerPersonNode;
+  billInput;
+  tipInput;
+  personCountInput;
+
+  constructor({
+    billInputObj,
+    tipInputObj,
+    personCountInputObj,
+    perPersonTipId = "",
+    totalPerPersonId = "",
+  }) {
+    if (billInputObj && tipInputObj && personCountInputObj) {
+      this.billInput = billInputObj;
+      this.tipInput = tipInputObj;
+      this.personCountInput = personCountInputObj;
+    } else {
+      throw new Error("Input objects must be valid object of type NumberInput");
+    }
+    this.perPersonTipNode = document.getElementById(perPersonTipId);
+    this.totalPerPersonNode = document.getElementById(totalPerPersonId);
+  }
+
+  updateData = () => {
+    const bill = this.billInput.getValue();
+    const tip = this.tipInput.getValue();
+    const personCount = this.personCountInput.getValue();
+
+    let tipPerPerson, totalPerPerson;
+
+    if (bill && tip != "" && personCount) {
+      const newTotalTip = (bill * tip) / 100;
+      tipPerPerson = newTotalTip / personCount;
+      totalPerPerson = bill / personCount + tipPerPerson;
+    } else {
+      tipPerPerson = 0;
+      totalPerPerson = 0;
+    }
+
+    this.perPersonTipNode.innerText = tipPerPerson.toFixed(2);
+    this.totalPerPersonNode.innerText = totalPerPerson.toFixed(2);
+  };
+}
 
 window.onload = () => {
   const billInput = new NumberInput("bill");
   const tipInput = new NumberInput("tip");
   const personCountInput = new NumberInput("count", true);
+  const calculator = new TipCalculator({
+    billInputObj: billInput,
+    tipInputObj: tipInput,
+    personCountInputObj: personCountInput,
+    perPersonTipId: "perPersonTip",
+    totalPerPersonId: "totalPerPerson",
+  });
 
-  const perPersonTipNode = document.getElementById("perPersonTip");
-  const totalPerPersonNode = document.getElementById("totalPerPerson");
+  // Subscribe to any changes made in any of the input so that new total bill
+  // and tips per person can be calculated
+  billInput.subscribeToUpdates(calculator.updateData);
+  tipInput.subscribeToUpdates(calculator.updateData);
+  personCountInput.subscribeToUpdates(calculator.updateData);
+
   const decrementTipBtn = document.getElementById("decrementTip");
   const incrementTipBtn = document.getElementById("incrementTip");
   const incrementPersonCountBtn = document.getElementById("incrementCount");
   const decrementPersonCountBtn = document.getElementById("decrementCount");
 
-  // Updates the text of tips per person and total bill per person with new
-  // value obtained from calculateTip function and if any of the field is not
-  // valid value we show 0 in both tips per person and total bill by default
-  function updateData() {
-    const bill = billInput.getValue();
-    const tip = tipInput.getValue();
-    const personCount = personCountInput.getValue();
-
-    if (bill && tip != "" && personCount) {
-      const { tipPerPerson, totalPerPerson } = calculateTip(
-        bill,
-        tip,
-        personCount
-      );
-      perPersonTipNode.innerText = tipPerPerson.toFixed(2);
-      totalPerPersonNode.innerText = totalPerPerson.toFixed(2);
-    } else {
-      perPersonTipNode.innerText = Number(0).toFixed(2);
-      totalPerPersonNode.innerText = Number(0).toFixed(2);
-    }
-  }
-
-  // Subscribe to any changes made in any of the input so that new total bill
-  // and tips per person can be calculated
-  billInput.subscribeToUpdates(updateData);
-  tipInput.subscribeToUpdates(updateData);
-  personCountInput.subscribeToUpdates(updateData);
-
+  decrementTipBtn.onclick = tipInput.decrement;
+  incrementTipBtn.onclick = tipInput.increment;
   decrementPersonCountBtn.onclick = personCountInput.decrement;
   incrementPersonCountBtn.onclick = personCountInput.increment;
 
-  decrementTipBtn.onclick = tipInput.decrement;
-  incrementTipBtn.onclick = tipInput.increment;
-
   // Initial call to handle case where the inputs are remembered on reload
-  updateData();
+  calculator.updateData();
 };
