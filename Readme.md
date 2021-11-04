@@ -4,6 +4,7 @@
 
 ## Running Guide
 
+> Install dependencies using npm install
 > Use npm run dev to start a development server at localhost:3000
 
 ## Test Cases
